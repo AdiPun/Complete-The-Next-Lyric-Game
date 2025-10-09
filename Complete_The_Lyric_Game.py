@@ -7,7 +7,7 @@ import json
 current_index = 0
 pause_length = 500
 
-# --- Functionality (callback) ---
+# --- Functions ---
 def tokenise_words_to_json(file_path="Lyrics.txt", words_per_chunk=7):
     """
     Reads text from a .txt file, removes newlines, splits into groups of N words,
@@ -51,7 +51,7 @@ def next_round():
             btn.config(state="disabled")
         return
 
-    # Pick a wrong line
+    # Pick a random wrong line
     wrong_line = random.choice(lyrics)
     while wrong_line == lyrics[current_index + 1]:
         wrong_line = random.choice(lyrics)
@@ -78,9 +78,9 @@ def handle_answer(selected_text):
         status_label.config(text="Wrong! Try again.")
 
 # --- Main window setup ---
-root = Tk()                   # Create the main window
-root.title("Lyric matching game")   # Set window title
-root.geometry("400x250")      # Set fixed size (optional)
+root = Tk()                  
+root.title("Lyric matching game")  
+root.geometry("400x250")    
 
 status_label = tk.Label(root, text="", font=("Segoe UI", 12), wraplength=350, justify="center")
 status_label.pack(pady=20)
