@@ -8,7 +8,8 @@ Paste your own song lyrics!
 - Python 3.8 or newer
 
 ## Usage
-1. Paste your lyrics text inside `Lyrics.txt`
-2. Double-click `run.bat` (Windows) or run this in terminal:
+1. Clone repo
+2. Paste your lyrics text inside `Lyrics.txt`
+3. Double-click `run.bat` (Windows) or run this in terminal:
    ```bash
    python Complete_The_Lyric_Game.py
