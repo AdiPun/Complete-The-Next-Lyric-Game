@@ -1,0 +1,28 @@
+==== Optical Sweep Profiling Report ====
+Generated: 2025-10-20 16:43:50.687689
+
+
+### Slow Version (optical_sweep_slow.py) ###
+
+Running cProfile...
+cProfile Total Time: 6.494 s
+Running Scalene...
+Scalene Total Time: 7.13 s
+Running Memory Profiler...
+Memory Profiler Total Time: 4.851 s
+
+-------------------------------------
+
+### Optimized Version (optical_sweep_fast.py) ###
+
+Running cProfile...
+cProfile Total Time: 4.754 s
+Running Scalene...
+Scalene Total Time: 6.514 s
+Running Memory Profiler...
+Memory Profiler Total Time: 4.175 s
+
+-------------------------------------
+
+All profiling completed.
+
