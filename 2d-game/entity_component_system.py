@@ -8,7 +8,7 @@ class EntityManager:
     def __init__(self, max_entities=1024):
         self.next_id = 0
         self.max_entities = max_entities
-        self.active = np.zeros(max_entities, dtype=bool)
+        self.active = np.zeros(max_entities, dtype=bool) # Creates an array of 1024 False bools
 
     def create_entity(self):
         if self.next_id >= self.max_entities:
@@ -20,28 +20,6 @@ class EntityManager:
 
     def destroy_entity(self, eid):
         self.active[eid] = False
-
-
-# COMPONENTS
-
-
-class RenderComponent:
-    def __init__(self, sprite=None, colour=(254, 254, 254), size=10):
-        self.sprite = sprite
-        self.colour = colour
-        self.size = size
-
-
-class PhysicsComponent:
-    def __init__(self, pos=(0, 0)):
-        self.pos = np.array(pos, dtype=float)
-        self.velocity = np.zeros(2)
-
-
-class InputComponent:
-    def __init__(self):
-        self
-
 
 # SYSTEMS
 
