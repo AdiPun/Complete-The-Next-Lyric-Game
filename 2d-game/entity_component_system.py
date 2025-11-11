@@ -8,7 +8,9 @@ class EntityManager:
     def __init__(self, max_entities=1024):
         self.next_id = 0
         self.max_entities = max_entities
-        self.active = np.zeros(max_entities, dtype=bool) # Creates an array of 1024 False bools
+        self.active = np.zeros(
+            max_entities, dtype=bool
+        )  # Creates an array of 1024 False bools
 
     def create_entity(self):
         if self.next_id >= self.max_entities:
@@ -21,12 +23,13 @@ class EntityManager:
     def destroy_entity(self, eid):
         self.active[eid] = False
 
+
 # SYSTEMS
 
 
 class RenderSystem:
     def __init__(self):
-        self.entities = {}
+        self.entities = {} # A dictionary of entities to look up colour and size
 
     def add(self, eid, colour=(255, 255, 255), size=8):
         self.entities[eid] = {"colour": colour, "size": size}
@@ -42,20 +45,20 @@ class RenderSystem:
 
 class PhysicsSystem:
     def __init__(self, max_entities=1024):
-        self.pos = np.zeros((max_entities, 2), dtype=float)
+        self.pos = np.zeros((max_entities, 2), dtype=float) # Creates an array of 1024 (0.0,0.0)'s
         self.vel = np.zeros((max_entities, 2), dtype=float)
         self.active = np.zeros(max_entities, dtype=bool)
 
     def add(self, eid, pos=(0, 0), vel=(0, 0)):
-        self.active[eid] = True
         self.pos[eid] = pos
         self.vel[eid] = vel
+        self.active[eid] = True
 
     def remove(self, eid):
         self.active[eid] = False
 
     def update(self, dt):
-        self.pos[self.active] += self.vel[self.active] * dt
+        self.pos[self.active] += self.vel[self.active] * dt # Adds the velocities to the positions of the active physics components
 
 
 class InputSystem:
