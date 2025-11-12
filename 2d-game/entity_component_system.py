@@ -149,20 +149,37 @@ class CollisionSystem:
 
                 dx = x - ox
                 dy = y - oy
+                dist_sq = dx * dx + dy * dy
+                min_dist = r + orad
 
-                if dx * dx + dy * dy <= (r + orad) ** 2:
-
-                    # Oppose velocities
-                    vx, ovx = -vx, -ovx
-                    vy, ovy = -vy, -ovy
+                if dist_sq <= min_dist**2:
+                    dist = np.sqrt(dist_sq) if dist_sq != 0 else 1e-6
+                    nx, ny = dx / dist, dy / dist  # normal vector
 
                     # Separate slightly
-                    overlap = (r + orad) - np.sqrt(dx * dx + dy * dy)
-                    x += (dx / (abs(dx) + 1e-6)) * overlap * 0.5
-                    y += (dy / (abs(dy) + 1e-6)) * overlap * 0.5
-                    ox -= (dx / (abs(dx) + 1e-6)) * overlap * 0.5
-                    oy -= (dy / (abs(dy) + 1e-6)) * overlap * 0.5
+                    overlap = min_dist - dist
+                    x += nx * overlap * 0.5
+                    y += ny * overlap * 0.5
+                    ox -= nx * overlap * 0.5
+                    oy -= ny * overlap * 0.5
 
+                    # Reflect velocities along normal
+                    rvx, rvy = ovx - vx, ovy - vy  # relative velocity
+                    vel_along_normal = rvx * nx + rvy * ny
+
+                    if vel_along_normal > 0:
+                        continue  # Means they're moving apart
+
+                    restitution = 1.0 if self.bounce else 0.5  # elasticity
+                    impulse = -(1 - restitution) * vel_along_normal / 2
+
+                    ix, iy = impulse * nx, impulse * ny
+                    vx -= ix
+                    vy -= iy
+                    ovx += ix
+                    ovy += iy
+
+                    # Apply changes
                     physics.pos[oeid] = (ox, oy)
                     physics.vel[oeid] = (ovx, ovy)
 

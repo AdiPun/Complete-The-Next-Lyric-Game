@@ -3,7 +3,6 @@ import random
 from entity_component_system import *
 
 pygame.init()
-
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
