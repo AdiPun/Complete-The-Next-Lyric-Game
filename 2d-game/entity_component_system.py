@@ -108,28 +108,64 @@ class CollisionSystem:
 
     def update(self, physics):
         # Only choose entities with active physics components
-        for eid in np.where(physics.active)[0]:
+        # np.where returns a tuple so we just want the first set
+
+        active_ids = np.where(physics.active)[0]
+
+        for eid in active_ids:
             x, y = physics.pos[eid]
             vx, vy = physics.vel[eid]
             r = physics.radius[eid]
 
+            # Bounce off walls
             # Bounce x plane
 
             if x + r > self.width:
                 x = self.width - r
-                vx = -abs(vx) if self.bounce else vx
+                vx = -abs(vx) if self.bounce else 0
             elif x - r < 0:
                 x = r
-                vx = abs(vx) if self.bounce else vx
+                vx = abs(vx) if self.bounce else 0
 
             # Bounce y plane
 
             if y + r > self.height:
                 y = self.height - r
-                vy = -abs(vy) if self.bounce else vy
+                vy = -abs(vy) if self.bounce else 0
             if y - r < 0:
                 y = r
-                vy = abs(vy) if self.bounce else vy
+                vy = abs(vy) if self.bounce else 0
 
-            physics.pos[eid] = (x,y)
-            physics.vel[eid] = (vx,vy)
+            # Bounce between entities
+            for oeid in active_ids:
+
+                # Skips itself
+                if oeid == eid:
+                    continue
+
+                ox, oy = physics.pos[oeid]
+                ovx, ovy = physics.vel[oeid]
+                orad = physics.radius[oeid]
+
+                dx = x - ox
+                dy = y - oy
+
+                if dx * dx + dy * dy <= (r + orad) ** 2:
+
+                    # Oppose velocities
+                    vx, ovx = -vx, -ovx
+                    vy, ovy = -vy, -ovy
+
+                    # Separate slightly
+                    overlap = (r + orad) - np.sqrt(dx * dx + dy * dy)
+                    x += (dx / (abs(dx) + 1e-6)) * overlap * 0.5
+                    y += (dy / (abs(dy) + 1e-6)) * overlap * 0.5
+                    ox -= (dx / (abs(dx) + 1e-6)) * overlap * 0.5
+                    oy -= (dy / (abs(dy) + 1e-6)) * overlap * 0.5
+
+                    physics.pos[oeid] = (ox, oy)
+                    physics.vel[oeid] = (ovx, ovy)
+
+            # Update entity position and velocity
+            physics.pos[eid] = (x, y)
+            physics.vel[eid] = (vx, vy)
